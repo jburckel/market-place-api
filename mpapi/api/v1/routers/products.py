@@ -1,21 +1,37 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Path
+from typing import List
+from bson import ObjectId, errors
+
+from mpapi.database import db
+from mpapi.schemas.products import ProductCreate, Product
 
 router = APIRouter()
 
-test_products = [
-    {"code": "ABC", "description": "Awesome product"},
-    {"code": "DEF", "description": "Bad product"},
-    {"code": "GHI", "description": "Good product"},
-]
+products = db.products
+
+@router.get("/", response_model=List[Product])
+async def get_products(skip: int = 0, limit: int = 100):
+    catalog = []
+    for product in products.find().skip(skip).limit(limit):
+        catalog.append(product)
+    return catalog
 
 
-@router.get("/")
-async def get_products(skip: int = 0, limit: int = 10):
-    return test_products[skip:limit]
+@router.get("/{product_id}", response_model=Product)
+def get_product_by_id(product_id: str = Path(..., title="The product ID as a valid ObjectId")):
+    try:
+        product = products.find_one({'_id': ObjectId(product_id)})
+    except errors.InvalidId:
+        raise HTTPException(status_code=400, detail="Invalid Product Id")
+    if not(product):
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
 
-
-@router.get("/{product_id}")
-async def get_product_by_id(product_id: int):
-    if len(test_products) > product_id:
-        return test_products[product_id]
-    return {}
+@router.post("/", response_model=Product)
+def get_product_by_id(product: ProductCreate):
+    try:
+        product_id = products.insert_one(product.dict()).inserted_id
+        db_product = products.find_one({'_id': ObjectId(product_id)})
+    except:
+        raise HTTPException(status_code=500, detail="Error inserting new product")
+    return db_product
