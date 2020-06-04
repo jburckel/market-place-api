@@ -12,6 +12,7 @@ ACCESS_TOKEN_EXPIRATION = config('ACCESS_TOKEN_EXPIRATION', cast=int, default=30
 JWT_SECRET_KEY = config('JWT_SECRET_KEY', cast=Secret)
 JWT_ALGORITHM = config('ADMIN_EMAIL', cast=str, default="HS256")
 
-DATABASE_URL = config('DATABASE_URL', cast=URL, default="sqlite:///app.db")
+DATABASE_URI = config('DATABASE_URI', cast=str, default="mongodb://localhost:27017/")
+DATABASE_NAME = config('DATABASE_NAME', cast=str, default="market-place-api")
 if TESTING:
-    DATABASE_URL = DATABASE_URL.replace(database='test_' + DATABASE_URL.database)
+    DATABASE_NAME = "test-" + DATABASE_NAME
