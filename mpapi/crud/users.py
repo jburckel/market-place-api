@@ -4,7 +4,7 @@ from fastapi import HTTPException, Depends, status
 
 from mpapi.core.auth import oauth2_scheme, decode_access_token
 from mpapi.core.database import get_collection
-from mpapi.crud.mixins import find_one_by_id, find_one_by_value
+from mpapi.crud.helpers import find_one_by_id, find_one_by_value
 
 
 users = get_collection("users")
