@@ -1,6 +1,7 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, errors
 
 from mpapi import settings
+from .collection import create_collections
 
 serverTimeout = 2000
 
@@ -18,13 +19,17 @@ try:
         )
 
     info = client.server_info()
-except:
-    print("Connection error")
+except errors.ServerSelectionTimeoutError as error:
+    print("Could not connect to Database. ERROR:", error)
 
 try:
     db = client[settings.DATABASE_NAME]
 except AttributeError as error:
     print("Get MongoDB database ERROR:", error)
+
+if settings.DATABASE_NAME not in client.list_database_names():
+    print('Creating collections')
+    create_collections(db)
 
 def get_collection(collection: str):
     try:
