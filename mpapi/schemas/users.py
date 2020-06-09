@@ -1,14 +1,22 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 from .mixins import DBModel
 
-
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     username: str
-    email: Optional[str] = None
-    full_name: Optional[str] = None
-    disabled: Optional[bool] = None
+    email: EmailStr
+    firstname: str = None
+    lastname: str = None
 
-class User(DBModel, UserCreate):
+class UserIn(UserBase):
+    password: str
+
+class UserOut(DBModel, UserBase):
+    email: Optional[EmailStr]
+
+class UserInDB(UserBase):
+    hashed_password: str
+
+class UserOutDB(UserOut):
     hashed_password: str
