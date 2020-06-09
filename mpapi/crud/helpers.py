@@ -1,4 +1,5 @@
-from bson import ObjectId, errors
+from bson import ObjectId, errors as bson_errors
+from pymongo import errors as pymongo_errors
 
 from fastapi import HTTPException
 
@@ -13,7 +14,7 @@ def find_one_by_id(collection, id: str):
     object_name = collection_name[:-1].title() if collection_name[-1] == 's' else collection_name.title()
     try:
         object = collection.find_one({'_id': ObjectId(id)})
-    except errors.InvalidId:
+    except bson_errors.InvalidId:
         raise HTTPException(status_code=400, detail=f"Invalid {object_name} Id")
     if not(object):
         raise HTTPException(status_code=404, detail=f"{object_name} not found")
@@ -28,8 +29,12 @@ def find_one_by_value(collection, value_name: str, value):
     collection_name = collection.name
     object_name = collection_name[:-1].title() if collection_name[-1] == 's' else collection_name.title()
     object = collection.find_one({value_name: value})
-    print("Test")
-    print(object)
     if not(object):
         raise HTTPException(status_code=404, detail=f"{object_name} not found")
     return object
+
+def insert_one(collection, values: dict):
+    try:
+        return collection.insert_one(values).inserted_id
+    except pymongo_errors.DuplicateKeyError as err:
+        raise HTTPException(status_code=400, detail=f"Duplicate value. ERROR: {err}")
