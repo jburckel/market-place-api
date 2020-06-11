@@ -4,7 +4,7 @@ from typing import List
 import mpapi.crud.products as crud
 from mpapi.crud.users import get_current_user
 from mpapi.schemas.users import UserOut
-from mpapi.schemas.products import ProductIn, ProductOut
+from mpapi.schemas.products import ProductToInsert, ProductToUpdate, ProductOut
 
 router = APIRouter()
 
@@ -19,6 +19,17 @@ def get_product_by_id(product_id: str = Path(..., title="The product ID as a val
 
 
 @router.post("/", response_model=ProductOut)
-def create_product(product: ProductIn, current_user: UserOut = Depends(get_current_user)):
-    product_id = crud.create_product(product.dict())
+def create_product(product: ProductToInsert, current_user: UserOut = Depends(get_current_user)):
+    product_id = crud.create_product(product)
+    return crud.get_product_by_id(product_id)
+
+
+@router.put("/{product_id}", response_model=ProductOut)
+def update_product(
+    *,
+    product_id: str = Path(..., title="The product ID as a valid ObjectId"),
+    product: ProductToUpdate,
+    current_user: UserOut = Depends(get_current_user)
+):
+    crud.update_product(product_id, product)
     return crud.get_product_by_id(product_id)
