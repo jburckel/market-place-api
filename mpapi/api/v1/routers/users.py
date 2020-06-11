@@ -18,6 +18,6 @@ def get_user_by_id(user_id: str = Path(..., title="The user ID as a valid Object
 
 
 @router.post("/", response_model=UserOut)
-def create_user(user: UserIn, current_user: UserOut = Depends(get_current_user)):
+def create_user(user: UserIn):
     user_id = crud.create_user(user)
     return crud.get_user_by_id(user_id)
