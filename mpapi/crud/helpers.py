@@ -1,10 +1,11 @@
 from bson import ObjectId, errors as bson_errors
 from pymongo import errors as pymongo_errors
+from pymongo.collection import Collection
 
 from fastapi import HTTPException
 
 
-def find_one_by_id(collection, id: str):
+def find_one_by_id(collection: Collection, id: str) -> dict:
     """
         Retrieve a object of a collection with the id provided
         The function verify that the id is a correct ObjectId, if not it returns 400 error
@@ -21,7 +22,7 @@ def find_one_by_id(collection, id: str):
     return object
 
 
-def find_one_by_value(collection, value_name: str, value):
+def find_one_by_value(collection: Collection, value_name: str, value) -> dict:
     """
         Retrieve a object of a collection with the value provided
         If nothing is found in DB, it returns 404 error
@@ -33,8 +34,18 @@ def find_one_by_value(collection, value_name: str, value):
         raise HTTPException(status_code=404, detail=f"{object_name} not found")
     return object
 
-def insert_one(collection, values: dict):
+
+def insert_one(collection: Collection, values_to_insert: dict) -> str:
+    id = ''
     try:
-        return collection.insert_one(values).inserted_id
+        id = collection.insert_one(values_to_insert).inserted_id
     except pymongo_errors.DuplicateKeyError as err:
         raise HTTPException(status_code=400, detail=f"Duplicate value. ERROR: {err}")
+    return id
+
+
+def update_one_by_id(collection: Collection, id: str, values_to_update: dict):
+    try:
+        collection.update_one({'_id': ObjectId(id)}, {'$set': values_to_update})
+    except Exception as err:
+        raise HTTPException(status_code=400, detail=f"Update error. ERROR: {err}")
