@@ -2,21 +2,32 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 from .mixins import DBModel
+from .commons import ObjectIdStr
 
 class UserBase(BaseModel):
-    username: str
-    email: EmailStr
+    username: str = None
+    email: EmailStr = None
+    hashed_password: str = None
     firstname: str = None
     lastname: str = None
+    sellerId: ObjectIdStr = None
+
 
 class UserIn(UserBase):
+    username: str
+    email: EmailStr
     password: str
 
+
+class UserToInsert(UserBase):
+    username: str
+    email: EmailStr
+    hashed_password: str
+
+
+class UserToUpdate(UserBase):
+    pass
+
+
 class UserOut(DBModel, UserBase):
-    email: Optional[EmailStr]
-
-class UserInDB(UserBase):
-    hashed_password: str
-
-class UserOutDB(UserOut):
-    hashed_password: str
+    pass
