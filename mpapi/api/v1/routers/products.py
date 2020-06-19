@@ -33,3 +33,8 @@ def update_product(
 ):
     crud.update_product(product_id, product)
     return crud.get_product_by_id(product_id)
+
+
+@router.delete("/{product_id}", status_code=204)
+def delete_product(product_id: str):
+    crud.delete_product_by_id(product_id)
