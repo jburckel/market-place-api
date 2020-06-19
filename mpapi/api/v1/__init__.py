@@ -6,10 +6,12 @@ router = APIRouter()
 
 router.include_router(
     products.router,
-    prefix="/products"
+    prefix="/products",
+    tags=['products']
 )
 
 router.include_router(
     users.router,
-    prefix="/users"
+    prefix="/users",
+    tags=['users']
 )
