@@ -4,8 +4,8 @@ from fastapi import HTTPException, Depends, status
 
 from mpapi.core.auth import oauth2_scheme, decode_access_token, get_password_hash
 from mpapi.core.database import get_collection
-from mpapi.crud.helpers import find_one_by_id, find_one_by_value, insert_one
-from mpapi.schemas.users import UserIn, UserInDB
+from mpapi.crud.helpers import find_one_by_id, find_one_by_value, insert_one, delete_one_by_id
+from mpapi.schemas.users import UserIn, UserToInsert
 
 
 users = get_collection("users")
@@ -39,5 +39,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 def create_user(user: UserIn) -> str:
     hashed_password = get_password_hash(user.password)
-    user_in_db = UserInDB(**user.dict(), hashed_password=hashed_password)
+    user_in_db = UserToInsert(**user.dict(), hashed_password=hashed_password)
     return insert_one(users, user_in_db.dict())
+
+
+def delete_user_by_id(user_id: str) -> bool:
+    return delete_one_by_id(users, user_id)

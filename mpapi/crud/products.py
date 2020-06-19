@@ -20,7 +20,8 @@ def get_products(skip: int = 0, limit: int = 0, filters: dict = None) -> list:
         Then get all products matching filters with the limit indicated
         Finally return the list of products
     """
-    return [product for product in products.find(filters).skip(skip).limit(limit)]
+    filtered_products = products.find(filters).skip(skip).limit(limit)
+    return [product for product in products.find(filters).skip(skip).limit(limit)] # pymongo cursor, needed to loop
 
 
 def create_product(product: ProductToInsert) -> str:
@@ -39,8 +40,11 @@ def update_product(product_id: str, product: ProductToUpdate):
 
     """
     values_to_update = product.dict(exclude_unset=True)
-    no_none_fields = ['code']
+    no_none_fields = ['name','sku']
     for field in no_none_fields:
         if field in values_to_update and values_to_update[field] is None:
             del values_to_update[field]
     update_one_by_id(products, product_id, values_to_update)
+
+def delete_product_by_id(product_id: str):
+    return delete_one_by_id(product_id)

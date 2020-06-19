@@ -4,6 +4,10 @@ from pymongo.collection import Collection
 
 from fastapi import HTTPException
 
+def get_collection_name(collection: Collection):
+    collection_name = collection.name
+    return collection_name[:-1].title() if collection_name[-1] == 's' else collection_name.title()
+
 
 def find_one_by_id(collection: Collection, id: str) -> dict:
     """
@@ -11,8 +15,7 @@ def find_one_by_id(collection: Collection, id: str) -> dict:
         The function verify that the id is a correct ObjectId, if not it returns 400 error
         If nothing is found in DB, it returns 404 error
     """
-    collection_name = collection.name
-    object_name = collection_name[:-1].title() if collection_name[-1] == 's' else collection_name.title()
+    object_name = get_collection_name(collection)
     try:
         object = collection.find_one({'_id': ObjectId(id)})
     except bson_errors.InvalidId:
@@ -27,8 +30,7 @@ def find_one_by_value(collection: Collection, value_name: str, value) -> dict:
         Retrieve a object of a collection with the value provided
         If nothing is found in DB, it returns 404 error
     """
-    collection_name = collection.name
-    object_name = collection_name[:-1].title() if collection_name[-1] == 's' else collection_name.title()
+    object_name = get_collection_name(collection)
     object = collection.find_one({value_name: value})
     if not(object):
         raise HTTPException(status_code=404, detail=f"{object_name} not found")
@@ -45,7 +47,16 @@ def insert_one(collection: Collection, values_to_insert: dict) -> str:
 
 
 def update_one_by_id(collection: Collection, id: str, values_to_update: dict):
+    object_name = get_collection_name(collection)
     try:
         collection.update_one({'_id': ObjectId(id)}, {'$set': values_to_update})
     except Exception as err:
-        raise HTTPException(status_code=400, detail=f"Update error. ERROR: {err}")
+        raise HTTPException(status_code=400, detail=f"Update {object_name} error. ERROR: {err}")
+
+
+def delete_one_by_id(collection: Collection, id: str):
+    object_name = get_collection_name(collection)
+    try:
+        collection.delete_one({'_id': ObjectId(id)})
+    except Exception as err:
+        raise HTTPException(status_code=400, detail=f"Delete {object_name} error. ERROR: {err}")
