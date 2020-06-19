@@ -8,7 +8,8 @@ COLLECTIONS = {
 def create_collections(db):
 
     products = db.create_collection(COLLECTIONS["PRODUCTS"])
-    products.create_index([('code', ASCENDING)], unique=True)
+    products.create_index([('sku', ASCENDING)], unique=True)
+    products.create_index([('productModelId', ASCENDING)])
 
     users = db.create_collection(COLLECTIONS["USERS"])
     users.create_index([('username', ASCENDING)], unique=True)
