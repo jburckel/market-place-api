@@ -3,23 +3,17 @@ from bson import ObjectId
 from fastapi import HTTPException, Depends, status
 
 from mpapi.core.auth import oauth2_scheme, decode_access_token, get_password_hash
-from mpapi.core.database import get_collection
-from mpapi.crud.helpers import find_one_by_id, find_one_by_value, insert_one, delete_one_by_id
-from mpapi.schemas.users import UserIn, UserToInsert
+from mpapi.schemas.users import UserToInsert, UserToUpdate, UserIn
 
+from .mixins import BaseCrud
 
-users = get_collection("users")
+class UsersCrud(BaseCrud):
+    def create_one(self, user: dict):
+        user['hashed_password'] = get_password_hash(user["password"])
+        del user['password']
+        return super().create_one(user)
 
-def get_user_by_id(user_id: str) -> dict:
-    return find_one_by_id(users, user_id)
-
-
-def get_user_by_username(username: str) -> dict:
-    return find_one_by_value(users, 'username', username)
-
-
-def get_users(skip: int = 0, limit: int = 0, filters: dict = None) -> list:
-    return [user for user in users.find(filters).skip(skip).limit(limit)]
+Users = UsersCrud("USERS", UserToInsert, UserToUpdate)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -31,17 +25,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     id = decode_access_token(token)
     if id is None:
         raise credentials_exception
-    user = get_user_by_id(id)
+    user = Users.get_one(id)
     if user is None:
         raise credentials_exception
     return user
-
-
-def create_user(user: UserIn) -> str:
-    hashed_password = get_password_hash(user.password)
-    user_in_db = UserToInsert(**user.dict(), hashed_password=hashed_password)
-    return insert_one(users, user_in_db.dict())
-
-
-def delete_user_by_id(user_id: str) -> bool:
-    return delete_one_by_id(users, user_id)

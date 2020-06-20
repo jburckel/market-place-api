@@ -25,13 +25,13 @@ def find_one_by_id(collection: Collection, id: str) -> dict:
     return object
 
 
-def find_one_by_value(collection: Collection, value_name: str, value) -> dict:
+def find_one_by_query(collection: Collection, query: dict) -> dict:
     """
         Retrieve a object of a collection with the value provided
         If nothing is found in DB, it returns 404 error
     """
     object_name = get_collection_name(collection)
-    object = collection.find_one({value_name: value})
+    object = collection.find_one(query)
     if not(object):
         raise HTTPException(status_code=404, detail=f"{object_name} not found")
     return object
