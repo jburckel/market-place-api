@@ -14,7 +14,7 @@ class ObjectIdStr(str):
     @classmethod
     def validate(cls, v):
         if not ObjectId.is_valid(str(v)):
-            return ValueError(f"Not a valid ObjectId: {v}")
+            raise ValueError(f"Not a valid ObjectId: {v}")
         return str(v)
 
 
@@ -30,7 +30,7 @@ class CombinedOjectIdStr(str):
     def validate(cls, v):
         objid1, objid2 = v.split("=")
         if not ObjectId.is_valid(str(objid1)) or not ObjectId.is_valid(str(objid2)):
-            return ValueError(f"Not a valid ObjectId: {v}")
+            raise ValueError(f"Not a valid ObjectId: {v}")
         return str(v)
 
 

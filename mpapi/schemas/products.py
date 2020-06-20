@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import List
 
 from .mixins import DBModel
@@ -36,7 +36,6 @@ class ProductToInsert(ProductBase):
     name: str
     active: bool = False
     sellerId: ObjectIdStr
-    pass
 
 
 class ProductToUpdate(ProductBase):
@@ -44,7 +43,10 @@ class ProductToUpdate(ProductBase):
         When receiving a product to update, it may be partial so every fields
         are optional. Used for validation and to remove unwanted values
     """
-    pass
+    @validator('sellerId')
+    def prevent_none(cls, v):
+        assert v is not None, 'sellerId may not be None'
+        return v
 
 
 class ProductOut(DBModel, ProductBase):

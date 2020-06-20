@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 from .mixins import DBModel
 from .commons import Image, MultiLanguageText
@@ -20,7 +20,10 @@ class SellerToInsert(SellerBase):
 
 
 class SellerToUpdate(SellerBase):
-    pass
+    @validator('name')
+    def prevent_none(cls, v):
+        assert v is not None and v != '', 'Name may not be None or empty string'
+        return v
 
 
 class SellerOut(DBModel, SellerBase):

@@ -1,8 +1,9 @@
 from enum import IntEnum
 from pydantic import BaseModel, Field
-from typing List
+from typing import List
 
 from .commons import Address, ObjectIdStr
+from .mixins import DBModel
 from .products import ProductBase
 
 class OrderStatus(IntEnum):
