@@ -9,7 +9,7 @@ TESTING = config('TESTING', cast=bool, default=False)
 APP_NAME = config('APP_NAME', cast=str, default="Market Place API")
 ADMIN_EMAIL = config('ADMIN_EMAIL', cast=str, default="admin@test.com")
 ACCESS_TOKEN_EXPIRATION = config('ACCESS_TOKEN_EXPIRATION', cast=int, default=30)
-JWT_SECRET_KEY = config('JWT_SECRET_KEY', cast=Secret)
+JWT_SECRET_KEY = config('JWT_SECRET_KEY', cast=Secret, default="09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7")
 JWT_ALGORITHM = config('JWT_ALGORITHM', cast=str, default="HS256")
 
 DATABASE_URI = config('DATABASE_URI', cast=str, default="mongodb://localhost:27017/")
