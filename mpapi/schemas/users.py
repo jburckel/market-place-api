@@ -7,7 +7,6 @@ from .commons import ObjectIdStr
 class UserBase(BaseModel):
     username: str = None
     email: EmailStr = None
-    hashed_password: str = None
     firstname: str = None
     lastname: str = None
     sellerId: ObjectIdStr = None
