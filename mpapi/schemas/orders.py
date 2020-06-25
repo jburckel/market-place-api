@@ -1,10 +1,12 @@
+from bson import ObjectId
+
 from enum import IntEnum
 from pydantic import BaseModel, Field
 from typing import List
 
 from .commons import Address, ObjectIdStr
 from .mixins import DBModel
-from .products import ProductBase
+from .products import ProductOut
 
 class OrderStatus(IntEnum):
     unconfirm = -1
@@ -19,16 +21,16 @@ class OrderStatus(IntEnum):
 
 
 class OrderLineBase(BaseModel):
-    product: ProductBase
-    quantity: float
-    basePrice: float
-    discount: float = 0
-    totalPrice: float
+    product: ProductOut = None
+    quantity: float = None
+    basePrice: float = None
+    discount: float = None
+    totalPrice: float = None
 
 
 class OrderBase(BaseModel):
     userId: ObjectIdStr = None
-    companyId: ObjectIdStr = None
+    sellerId: ObjectIdStr = None
     invoiceAddress: Address = None
     shippingAddress: Address = None
     totalPrice: float = None
@@ -36,10 +38,46 @@ class OrderBase(BaseModel):
     lines: List[OrderLineBase] = None
     status: OrderStatus = None
 
+    class Config:
+        schema_extra = {
+            'example': {
+                'userId': str(ObjectId()),
+                'sellerId': str(ObjectId()),
+                'invoiceAddress': {
+                    'name': None,
+                    'addressLine1': '1 rue de la paix',
+                    'addressLine2': None,
+                    'postalCode': 75000,
+                    'town': 'Paris',
+                    'state': None,
+                    'country': 'France'
+
+                },
+                'shippingAddress': None,
+                'totalPrice': 124.6,
+                'currencyId': 'EUR',
+                'lines': [
+                    {
+                        """
+                        'product': {
+                            '_id': str(ObjectId()),
+                            'name': 'Test Product'
+                        },
+                        """
+                        'quantity': 10,
+                        'basePrice': 12.46,
+                        'discount': 0,
+                        'totalPrice': 124.6
+                    }
+                ],
+                'status': 0
+            }
+        }
+
 
 class OrderToInsert(OrderBase):
     userId: ObjectIdStr
-    companyId: ObjectIdStr
+    sellerId: ObjectIdStr
     invoiceAddress: Address
     totalPrice: float
     currencyId: str

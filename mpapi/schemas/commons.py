@@ -18,7 +18,7 @@ class ObjectIdStr(str):
         return str(v)
 
 
-class CombinedOjectIdStr(str):
+class CombinedObjectIdStr(str):
     """
     Combined Id this a combinaison of two ObjectIds seperate by =
     """

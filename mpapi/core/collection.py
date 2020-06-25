@@ -3,7 +3,8 @@ from pymongo import ASCENDING
 COLLECTIONS = {
     "PRODUCTS": "products",
     "USERS": "users",
-    "SELLERS": "sellers"
+    "SELLERS": "sellers",
+    "ORDERS": "orders"
 }
 
 def create_collections(db):

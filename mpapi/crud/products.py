@@ -1,7 +1,8 @@
 from bson import ObjectId
 
-from .mixins import BaseCrud
 from mpapi.schemas.products import ProductToInsert, ProductToUpdate
+
+from ._mixins import BaseCrud
 
 class ProductBase(BaseCrud):
     pass

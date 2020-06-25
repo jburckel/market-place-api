@@ -12,7 +12,7 @@ class UserBase(BaseModel):
     sellerId: ObjectIdStr = None
 
 
-class UserIn(UserBase):
+class UserInInsert(UserBase):
     username: str
     email: EmailStr
     password: str
@@ -22,6 +22,10 @@ class UserToInsert(UserBase):
     username: str
     email: EmailStr
     hashed_password: str
+
+
+class UserInUpdate(UserBase):
+    password: str = None
 
 
 class UserToUpdate(UserBase):

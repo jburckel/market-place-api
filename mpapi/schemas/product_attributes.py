@@ -1,10 +1,10 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from .commons import CombinedOjectIdStr, MultiLanguageText
+from .commons import ObjectIdStr, MultiLanguageText
 
 
 class ProductAttributeId(BaseModel):
-    id: Optional[CombinedOjectIdStr] = Field(..., alias="_id")
+    id: Optional[ObjectIdStr] = Field(..., alias='_id')
     pass
 
 

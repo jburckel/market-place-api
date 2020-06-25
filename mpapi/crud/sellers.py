@@ -1,6 +1,6 @@
 from mpapi.schemas.sellers import SellerToInsert, SellerToUpdate
 
-from .mixins import BaseCrud
+from ._mixins import BaseCrud
 
 class SellersCrud(BaseCrud):
     pass

@@ -3,11 +3,12 @@ from bson import ObjectId
 from fastapi.exceptions import HTTPException
 
 from mpapi.crud.sellers import Sellers
+from mpapi.schemas.sellers import SellerToInsert
 
 
 url = '/api/v1/sellers/'
 
-valid_seller = {"name": "Test"}
+valid_seller = SellerToInsert.schema()["example"]
 seller_id = None
 
 
@@ -50,7 +51,6 @@ def test_update_seller_bad_request(client, user_token):
     update_seller = valid_seller.copy()
     update_seller["name"] = None
     r = client.put(up_url, headers=user_token, json=update_seller)
-    print(r.json())
     assert r.status_code == 422
 
 
@@ -75,4 +75,5 @@ def test_delete_seller_authorized(client, user_token):
     r = client.delete(del_url, headers=user_token)
     assert r.status_code == 204
     r = client.get(del_url)
+    print(r.json())
     assert r.status_code == 404

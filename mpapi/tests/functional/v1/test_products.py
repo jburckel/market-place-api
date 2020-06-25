@@ -3,11 +3,12 @@ from bson import ObjectId
 from fastapi.exceptions import HTTPException
 
 from mpapi.crud.products import Products
+from mpapi.schemas.products import ProductToInsert
 
 
 url = '/api/v1/products/'
 
-valid_product = {"name": "Test", "sellerId": str(ObjectId())}
+valid_product = ProductToInsert.schema()["example"]
 product_id = None
 
 
@@ -21,9 +22,16 @@ def test_create_product_unauthorized(client):
     assert r.status_code == 401
 
 
-def test_create_product_bad_request(client, user_token):
+def test_create_product_bad_request_no_name(client, user_token):
     bad_product = valid_product.copy()
     del bad_product['name']
+    r = client.post(url, headers=user_token, json=bad_product)
+    assert r.status_code == 422
+
+
+def test_create_product_bad_request_wrong_seller_id(client, user_token):
+    bad_product = valid_product.copy()
+    bad_product['sellerId'] = "123456"
     r = client.post(url, headers=user_token, json=bad_product)
     assert r.status_code == 422
 
@@ -74,7 +82,5 @@ def test_delete_product_authorized(client, user_token):
     del_url = url + str(product_id)
     r = client.delete(del_url, headers=user_token)
     assert r.status_code == 204
-    try:
-        assert Products.get_one(product_id) == None
-    except HTTPException as e:
-        assert e.status_code == 404
+    r = client.get(del_url)
+    assert r.status_code == 404
