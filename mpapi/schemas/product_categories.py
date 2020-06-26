@@ -1,8 +1,13 @@
-from ._commons import TreeObjectIdStr
+from typing import List
+from pydantic import BaseModel
+
+from ._commons import TreeObjectIdStr, MultiLanguageText, Image
+from ._mixins import DBModel
+
 
 class ProductCategoryTranslations(BaseModel):
     name: MultiLanguageText = None
-    description: MultiLanguageTest = None
+    description: MultiLanguageText = None
 
 
 class ProductCategoryBase(BaseModel):

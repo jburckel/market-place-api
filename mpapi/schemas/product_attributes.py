@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 from ._commons import ObjectIdStr, MultiLanguageText
 from ._mixins import DBModel
