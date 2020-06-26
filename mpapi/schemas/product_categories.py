@@ -49,12 +49,12 @@ class ProductCategoryBase(BaseModel):
         }
 
 
-class ProductCategoryToInsert(BaseModel):
+class ProductCategoryToInsert(ProductCategoryBase):
     name: str
     sellerId: ObjectIdStr
 
 
-class ProductCategoryToUpdate(BaseModel):
+class ProductCategoryToUpdate(ProductCategoryBase):
     @validator('sellerId')
     def prevent_none(cls, v):
         assert v is not None, 'sellerId can not be set to None'
