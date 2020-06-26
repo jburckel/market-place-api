@@ -34,6 +34,23 @@ class CombinedObjectIdStr(str):
         return str(v)
 
 
+class TreeObjectIdStr(str):
+    """
+    Combined Id this a combinaison of several ObjectIds seperate by /
+    """
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v):
+        listObj = v.split("/")
+        for obj in listObj:
+            if not ObjectId.is_valid(str(obj)):
+                raise ValueError(f"Not a valid ObjectId: {v}")
+        return str(v)
+
+
 class MultiLanguageText(BaseModel):
     en: str = None
     es: str = None

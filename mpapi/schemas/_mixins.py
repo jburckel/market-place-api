@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from .commons import ObjectIdStr
+from ._commons import ObjectIdStr
 
 
 class DBModel(BaseModel):
