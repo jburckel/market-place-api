@@ -26,6 +26,8 @@ def mpapi_exceptions(result: dict):
         return bad_request()
     elif error_id == Exceptions.DELETE_BAD_REQUEST:
         return bad_request()
+    elif error_id == 'USER-HAS-NO-SELLERID':
+        return bad_request("Create a company before creating product")
     return HTTPException(
             status_code=404
         )
