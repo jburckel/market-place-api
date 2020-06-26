@@ -25,7 +25,7 @@ def get_seller_by_id(seller_id: str = Path(..., title="The seller ID as a valid 
 def create_seller(Seller: SellerToInsert, CurrentUser: UserOut = Depends(get_current_user)):
     result = Sellers.create_one(Seller)
     if result['success'] and result['value']:
-        seller_id = result['value']
+        seller_id = result['value']['_id']
         if not(hasattr(CurrentUser, 'sellerId')) or CurrentUser.sellerId is None:
             Users.update_one(CurrentUser.id, {"sellerId": seller_id})
     return format_result(result)
