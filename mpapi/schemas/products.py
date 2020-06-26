@@ -3,10 +3,8 @@ from bson import ObjectId
 from pydantic import BaseModel, validator
 from typing import List
 
-from .mixins import DBModel
-from .commons import MultiLanguageText, Image, ObjectIdStr
-from .product_attributes import ProductAttributeId
-from .sellers import SellerOut
+from ._commons import MultiLanguageText, Image, ObjectIdStr, CombinedObjectIdStr, TreeObjectIdStr
+from ._mixins import DBModel
 
 
 class ProductTranslations(BaseModel):
@@ -24,8 +22,9 @@ class ProductBase(BaseModel):
     price: float = None
     priceCurrency: str = None
     images: List[Image] = None
-    attributeIds: List[ObjectIdStr] = None
-    secondaryAttributeIds: List[ObjectIdStr] = None
+    categoriesIds: List[TreeObjectIdStr] = None
+    attributeIds: List[CombinedObjectIdStr] = None
+    secondaryAttributeIds: List[CombinedObjectIdStr] = None
     sellerId: ObjectIdStr = None
     active: bool = None
 
@@ -65,12 +64,12 @@ class ProductBase(BaseModel):
                     }
                 ],
                 'attributeIds': [
-                    str(ObjectId()),
-                    str(ObjectId())
+                    str(ObjectId()) + '=' + str(ObjectId()),
+                    str(ObjectId()) + '=' + str(ObjectId())
                 ],
                 'secondaryAttributeIds': [
-                    str(ObjectId()),
-                    str(ObjectId())
+                    str(ObjectId()) + '=' + str(ObjectId()),
+                    str(ObjectId()) + '=' + str(ObjectId())
                 ],
                 'sellerId': str(ObjectId()),
                 'active': True

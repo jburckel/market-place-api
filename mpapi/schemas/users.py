@@ -1,8 +1,9 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
-from .mixins import DBModel
-from .commons import ObjectIdStr
+from ._commons import ObjectIdStr
+from ._mixins import DBModel
+
 
 class UserBase(BaseModel):
     username: str = None

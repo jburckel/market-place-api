@@ -1,7 +1,8 @@
 from pydantic import BaseModel, validator
 
-from .mixins import DBModel
-from .commons import Image, MultiLanguageText
+from ._commons import Image, MultiLanguageText
+from ._mixins import DBModel
+
 
 
 class SellerTranslations(BaseModel):

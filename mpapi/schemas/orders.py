@@ -4,8 +4,8 @@ from enum import IntEnum
 from pydantic import BaseModel, Field
 from typing import List
 
-from .commons import Address, ObjectIdStr
-from .mixins import DBModel
+from ._commons import Address, ObjectIdStr
+from ._mixins import DBModel
 from .products import ProductOut
 
 class OrderStatus(IntEnum):
