@@ -1,7 +1,7 @@
 from bson import ObjectId
 
 from enum import IntEnum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from typing import List
 
 from ._commons import Address, ObjectIdStr
@@ -86,7 +86,15 @@ class OrderToInsert(OrderBase):
 
 
 class OrderToUpdate(OrderBase):
-    pass
+    @validator('userId')
+    def prevent_none_user(cls, v):
+        assert v is not None, 'userId can not be set to None'
+        return v
+
+    @validator('sellerId')
+    def prevent_none_seller(cls, v):
+        assert v is not None, 'sellerId can not be set to None'
+        return v
 
 
 class OrderOut(DBModel, OrderBase):
