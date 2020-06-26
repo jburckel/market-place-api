@@ -25,7 +25,7 @@ def get_product_by_id(product_id: str = Path(..., title="The product ID as a val
 @router.post("/", response_model=ProductOut, status_code=201)
 def create_product(Product: ProductToInsert, CurrentUser: UserOut = Depends(get_current_user)):
     if not(hasattr(CurrentUser, 'sellerId')) or CurrentUser.sellerId is None:
-        raise mpapi_exceptions('PRODUCT-NO-SELLERID')
+        raise mpapi_exceptions({'error': 'USER-HAS-NO-SELLERID'})
     Product.sellerId = CurrentUser.sellerId
     return format_result(Products.create_one(Product))
 
