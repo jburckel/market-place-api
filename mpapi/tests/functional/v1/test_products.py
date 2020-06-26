@@ -29,13 +29,6 @@ def test_create_product_bad_request_no_name(client, user_token):
     assert r.status_code == 422
 
 
-def test_create_product_bad_request_wrong_seller_id(client, user_token):
-    bad_product = valid_product.copy()
-    bad_product['sellerId'] = "123456"
-    r = client.post(url, headers=user_token, json=bad_product)
-    assert r.status_code == 422
-
-
 def test_create_product_authorized(client, user_token):
     global product_id
     r = client.post(url, headers=user_token, json=valid_product)
