@@ -30,7 +30,7 @@ class ProductAttributeToInsert(ProductAttributeBase):
 class ProductAttributeToUpdate(ProductAttributeBase):
     @validator('sellerId')
     def prevent_none(cls, v):
-        assert v is not None, 'sellerId may not be None'
+        assert v is not None, 'sellerId can not be set to None'
         return v
 
 
@@ -64,7 +64,7 @@ class ProductAttributeValueToInsert(BaseModel):
 class ProductAttributeValueToUpdate(BaseModel):
     @validator('productAttributeId')
     def prevent_none(cls, v):
-        assert v is not None, 'productAttributeId may not be None'
+        assert v is not None, 'productAttributeId can not be set to None'
         return v
 
 
