@@ -11,24 +11,25 @@ product_id = None
 
 def test_create_product():
     global product_id
-    product_id = Products.create_one(valid_product)
-    product = Products.get_one(product_id)
-    assert product["name"] == valid_product["name"]
+    result = Products.create_one(valid_product)
+    assert result['success'] is True
+    product_id = result['value']['_id']
+    assert ObjectId(product_id)
+    assert result['value']['name'] == valid_product["name"]
 
 
 def test_update_product():
     global product_id
     name = "Test Update"
-    Products.update_one(product_id, {"name": name})
-    product = Products.get_one(product_id)
-    assert product["name"] == name
+    result = Products.update_one(product_id, {"name": name})
+    print(result)
+    assert result['success'] is True
+    assert result['value']['name'] == name
 
 
 def test_delete_product():
     global product_id
-    Products.delete_one(product_id)
-    product = None
-    try:
-        Products.get_one(product_id)
-    except Exception as e:
-        assert str(e) == "Product not found"
+    result = Products.delete_one(product_id)
+    assert result['success'] is True
+    result = Products.get_one(product_id)
+    assert result['success'] is False

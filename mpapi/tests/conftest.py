@@ -27,7 +27,7 @@ def client():
 
 @pytest.fixture(scope='session')
 def user_token():
-    user = Users.get_many(limit=1)[0]
+    user = Users.get_many(limit=1)['value'][0]
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRATION)
     access_token = create_access_token(
         data={"sub": str(user["_id"])}, expires_delta=access_token_expires

@@ -6,7 +6,8 @@ from fastapi import HTTPException
 from mpapi.core.database import get_collection
 from mpapi.core.collection import COLLECTIONS
 
-from ._exceptions import MPAPIException
+from mpapi.schemas.exceptions import Exceptions
+
 from ._helpers import find_one_by_id, find_one_by_query, insert_one, update_one_by_id, delete_one_by_id
 
 class BaseCrud:
@@ -40,20 +41,21 @@ class BaseCrud:
         return Item.dict(exclude=fields_to_exclude, exclude_unset=exclude_unset)
 
 
+    @staticmethod
+    def format_result(result: tuple):
+        success = result[0]
+        value = result[1]
+        error_id = result[2]
+        return {'success': result[0], 'value': value, 'error': error_id}
+
+
     def get_one(self, id: str = None, query: dict = None) -> dict:
         if id is not None:
-            try:
-                return find_one_by_id(self.collection, id)
-            except Exception as e:
-                raise MPAPIException(e)
-
+            return self.format_result(find_one_by_id(self.collection, id))
         elif query is not None:
-            try:
-                return find_one_by_query(self.collection, query)
-            except Exception as e:
-                raise MPAPIException(e)
+            return self.format_result(find_one_by_query(self.collection, query))
         else:
-            raise MPAPIException("No result")
+            return self.format_result((False, None, Exceptions.GET_BAD_REQUEST))
 
 
     def get_many(
@@ -62,18 +64,31 @@ class BaseCrud:
         limit: int = 0,
         filters: dict = None
     ) -> list:
-        return [item for item in self.collection.find(filters).skip(skip).limit(limit)]
+        try:
+            return self.format_result(
+                (
+                    True,
+                    [item for item in self.collection.find(filters).skip(skip).limit(limit)],
+                    None
+
+                )
+            )
+        except Exception:
+            return self.format_result((False, None, Exceptions.GET_BAD_REQUEST))
 
 
     def create_one(self, item) -> str:
         ItemValidated = self.validate_fields(item, self.CreateValidation)
         if ItemValidated is not None:
             try:
-                return insert_one(self.collection, self.to_dict(ItemValidated, exclude_unset=False))
+                result = insert_one(self.collection, self.to_dict(ItemValidated, exclude_unset=False))
+                if result[0] is not True:
+                    return self.format_result(result)
+                else:
+                    return self.get_one(result[1])
             except Exception as e:
-                raise MPAPIException(e)
-        else:
-            raise MPAPIException(f"Invalid data")
+                return self.format_result((False, None, Exceptions.CREATE_UNKNOWN))
+        return self.format_result((False, None, Exceptions.CREATE_BAD_REQUEST))
 
 
     def create_many(self, items: list) -> list:
@@ -81,13 +96,14 @@ class BaseCrud:
 
 
     def update_one(self, id: str, item, fields_to_exclude: set = set()):
-        ItemValidated = self.validate_fields(item, self.UpdateValidation, )
+        ItemValidated = self.validate_fields(item, self.UpdateValidation)
         if ItemValidated is not None:
-            try:
-                return update_one_by_id(self.collection, id, self.to_dict(ItemValidated, fields_to_exclude, True))
-            except Exception as e:
-                raise MPAPIException(e)
-        raise MPAPIException(f"Invalid data")
+            result = update_one_by_id(self.collection, id, self.to_dict(ItemValidated, fields_to_exclude, True))
+            if result[0] is not True:
+                return self.format_result(result)
+            else:
+                return self.get_one(id)
+        return self.format_result((False, None, Exceptions.UPDATE_BAD_REQUEST))
 
 
     def update_many(self, items: list):
@@ -95,12 +111,10 @@ class BaseCrud:
 
 
     def delete_one(self, id: str):
-        if id is None:
-            raise MPAPIException("Id can not be null")
         try:
-            return delete_one_by_id(self.collection, id)
+            return self.format_result(delete_one_by_id(self.collection, id))
         except Exception as e:
-            raise MPAPIException(e)
+            return self.format_result(False, None, Exceptions.DELETE_BAD_REQUEST)
 
 
     def delete_many(self, items: list):

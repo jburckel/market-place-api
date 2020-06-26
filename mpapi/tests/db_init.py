@@ -17,6 +17,6 @@ def db_drop(database_uri, database_name):
 def db_init(database_uri, database_name, delete=False):
     if delete:
         db_drop(database_uri, database_name)
-    user_id = Users.create_one({"username": "johndoe", "email": "johndoe@mail.com", "password": "@@123456Abc**"})
-    seller_id = Sellers.create_one({"name": "Company1"})
+    user_id = Users.create_one({"username": "johndoe", "email": "johndoe@mail.com", "password": "@@123456Abc**"})['value']['_id']
+    seller_id = Sellers.create_one({"name": "Company1"})['value']['_id']
     Users.update_one(user_id, {'sellerId': seller_id})
