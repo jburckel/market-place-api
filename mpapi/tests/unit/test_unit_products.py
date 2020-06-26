@@ -1,7 +1,4 @@
-from random import randrange
 from bson import ObjectId
-
-from fastapi.exceptions import HTTPException
 
 from mpapi.crud.products import Products
 from mpapi.schemas.products import ProductToInsert
@@ -22,7 +19,6 @@ def test_update_product():
     global product_id
     name = "Test Update"
     result = Products.update_one(product_id, {"name": name})
-    print(result)
     assert result['success'] is True
     assert result['value']['name'] == name
 
