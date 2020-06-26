@@ -27,6 +27,5 @@ def mpapi_exceptions(result: dict):
     elif error_id == Exceptions.DELETE_BAD_REQUEST:
         return bad_request()
     return HTTPException(
-            status_code=404,
-            detail=detail
+            status_code=404
         )
