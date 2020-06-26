@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .routers import products, orders, sellers, users
+from .routers import products, product_categories, orders, sellers, users
 
 router = APIRouter()
 
@@ -9,6 +9,27 @@ router.include_router(
     products.router,
     prefix='/products',
     tags=['products']
+)
+
+
+router.include_router(
+    products.router,
+    prefix='/product-attributes',
+    tags=['product-attributes']
+)
+
+
+router.include_router(
+    products.router,
+    prefix='/product-attribute-values',
+    tags=['product-attribute-values']
+)
+
+
+router.include_router(
+    products.router,
+    prefix='/product-categories',
+    tags=['product-categories']
 )
 
 
