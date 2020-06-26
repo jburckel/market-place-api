@@ -8,11 +8,13 @@ def bad_request(detail: str = "Bad Request"):
             detail=detail
         )
 
+
 def not_found(detail: str = "Item not found"):
     return HTTPException(
             status_code=404,
             detail=detail
         )
+
 
 def mpapi_exceptions(result: dict):
     error_id = result['error']
