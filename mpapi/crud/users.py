@@ -1,14 +1,9 @@
-from bson import ObjectId
-
-from fastapi import HTTPException, Depends, status
-
 from mpapi.core.auth import get_password_hash
 from mpapi.schemas.users import UserToInsert, UserToUpdate, UserInInsert, UserInUpdate, UserOut
 
 from ._mixins import BaseCrud
 
 class UsersCrud(BaseCrud):
-
 
     def create_one(self, User):
         User = self.validate_fields(User, UserInInsert)
