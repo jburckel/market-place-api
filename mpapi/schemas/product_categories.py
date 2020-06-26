@@ -36,14 +36,16 @@ class ProductCategoryBase(BaseModel):
                         'es': 'La descripción de mi categoría de productos'
                     }
                 },
-                'images': {
-                    'url': 'https://images.unsplash.com/photo-1560427450-00fa9481f01e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=639&q=80',
-                    'description': {
-                        'en': 'A wonderful category',
-                        'fr': 'Une magnifique categorie',
-                        'es': 'Una categoría magnífica'
+                'images': [
+                    {
+                        'url': 'https://images.unsplash.com/photo-1560427450-00fa9481f01e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=639&q=80',
+                        'description': {
+                            'en': 'A wonderful category',
+                            'fr': 'Une magnifique categorie',
+                            'es': 'Una categoría magnífica'
+                        }
                     }
-                },
+                ],
                 'sellerId': str(ObjectId())
             }
         }
